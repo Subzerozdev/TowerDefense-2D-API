@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
 using Repositories.Implements;
 using Repositories.Interfaces;
@@ -8,6 +6,7 @@ using Services.Implements;
 using Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Ưu tiên lấy từ Environment Variable
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
@@ -16,11 +15,6 @@ var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION")
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Repositories
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
-// Services
-builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,7 +26,7 @@ builder.Services.AddScoped<IResultLevelRepository, ResultLevelRepository>();
 builder.Services.AddScoped<IGameProgressRepository, GameProgressRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
-//Services
+// Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IGameLevelService, GameLevelService>();
 builder.Services.AddScoped<IResultLevelService, ResultLevelService>();
@@ -41,12 +35,16 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// =====================
+// BẬT SWAGGER CHO CẢ PRODUCTION
+// =====================
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // (Tùy chọn) Redirect trang gốc "/" sang Swagger
+    app.MapGet("/", () => Results.Redirect("/swagger"));
 }
 
 app.UseHttpsRedirection();
