@@ -1,0 +1,6 @@
+@TowerDefense_2D_API_HostAddress = http://localhost:5065
+
+GET {{TowerDefense_2D_API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
