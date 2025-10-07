@@ -9,9 +9,11 @@ namespace Services.Implements
     public class GameLevelService : IGameLevelService
     {
         private readonly IGameLevelRepository _repo;
-        public GameLevelService(IGameLevelRepository repo)
+        private readonly IWaveRepository _waveRepo;
+        public GameLevelService(IGameLevelRepository repo, IWaveRepository waveRepo)
         {
             _repo = repo;
+            _waveRepo = waveRepo;
         }
 
         public async Task<Gamelevel?> GetByIdAsync(int id)
@@ -26,10 +28,10 @@ namespace Services.Implements
             return entity == null ? null : Map(entity);
         }
 
-        public async Task<List<GameLevelDto>> GetLevelByWaveLevelAsync(int waveLevel)
+        public async Task<GameLevelDto?> GetLevelByWaveLevelAsync(int waveLevel)
         {
-            var list = await _repo.GetByWaveLevelAsync(waveLevel);
-            return list.Select(Map).ToList();
+            var entity = await _waveRepo.GetByIdAsync(waveLevel);
+            return entity == null ? null : Map(entity.Gamelevel);
         }
 
         private GameLevelDto Map(Repositories.Entities.Gamelevel g)

@@ -7,7 +7,7 @@ namespace Services.Interfaces
     public interface IGameLevelService
     {
         Task<GameLevelDto?> GetLevelByLevelAsync(int level);
-        Task<List<GameLevelDto>> GetLevelByWaveLevelAsync(int waveLevel);
+        Task<GameLevelDto?> GetLevelByWaveLevelAsync(int waveLevel);
         Task<Gamelevel?> GetByIdAsync(int id);
     }
 }

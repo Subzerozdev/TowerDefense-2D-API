@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection.Emit;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Data;
 using Repositories.Entities;
 using Repositories.Interfaces;
@@ -29,15 +30,6 @@ namespace Repositories.Implements
                     .ThenInclude(w => w.Spawnpoints)
                         .ThenInclude(sp => sp.Spawns)
                 .FirstOrDefaultAsync(g => g.Level == level);
-
-        public async Task<List<Gamelevel>> GetByWaveLevelAsync(int waveLevel) =>
-            await _context.Gamelevels
-                .Include(g => g.Waves)
-                    .ThenInclude(w => w.Spawnpoints)
-                        .ThenInclude(sp => sp.Spawns)
-                .Where(g => g.Waves.Any(w => w.Wavelevel >= waveLevel))
-                .OrderBy(g => g.Level)
-                .ToListAsync();
     }
 }
 
