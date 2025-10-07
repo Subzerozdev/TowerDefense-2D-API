@@ -27,8 +27,8 @@ namespace TowerDefense_2D_API
         [HttpGet("wave/{waveLevel}")]
         public async Task<IActionResult> GetLevelByWaveLevel(int waveLevel)
         {
-            var list = await _service.GetLevelByWaveLevelAsync(waveLevel);
-            return Ok(list);
+            var dto = await _service.GetLevelByWaveLevelAsync(waveLevel);
+            return Ok(dto != null ? dto.Level : 0);
         }
     }
 }

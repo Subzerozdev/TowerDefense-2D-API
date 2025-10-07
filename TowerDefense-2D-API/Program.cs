@@ -25,6 +25,7 @@ builder.Services.AddScoped<IGameLevelRepository, GameLevelRepository>();
 builder.Services.AddScoped<IResultLevelRepository, ResultLevelRepository>();
 builder.Services.AddScoped<IGameProgressRepository, GameProgressRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IWaveRepository, WaveRepository>();
 
 // Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
