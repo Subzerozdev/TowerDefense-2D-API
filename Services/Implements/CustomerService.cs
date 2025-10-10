@@ -83,7 +83,8 @@ namespace Services.Implements
                     CurrentCoin = c.Gameprogress.Currentcoin,
                     CurrentHeart = c.Gameprogress.Currentheart,
                     CurrentPoint = c.Gameprogress.Currentpoint,
-                    WaveId = c.Gameprogress.WaveId
+                    WaveId = c.Gameprogress.WaveId,
+                    Towerplaces = (List<Towerplace>)c.Gameprogress.Towerplaces
                 },
                 ResultLevels = c.Resultlevels.Select(r => new ResultLevelDto
                 {

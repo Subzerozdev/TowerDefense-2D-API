@@ -30,11 +30,9 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Spawnpoint> Spawnpoints { get; set; }
 
-    public virtual DbSet<Wave> Waves { get; set; }
+    public virtual DbSet<Towerplace> Towerplaces { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=towerdf;Username=postgres;Password=12345");
+    public virtual DbSet<Wave> Waves { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -167,6 +165,23 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Wave).WithMany(p => p.Spawnpoints)
                 .HasForeignKey(d => d.WaveId)
                 .HasConstraintName("fk_spawnpoint_wave");
+        });
+
+        modelBuilder.Entity<Towerplace>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("towerplace_pkey");
+
+            entity.ToTable("towerplace");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.GameProgressId).HasColumnName("game_progress_id");
+            entity.Property(e => e.Node).HasColumnName("node");
+            entity.Property(e => e.TowerType).HasColumnName("towerType");
+
+            entity.HasOne(d => d.GameProgress).WithMany(p => p.Towerplaces)
+                .HasForeignKey(d => d.GameProgressId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_game_progress");
         });
 
         modelBuilder.Entity<Wave>(entity =>

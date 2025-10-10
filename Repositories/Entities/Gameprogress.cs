@@ -19,5 +19,7 @@ public partial class Gameprogress
 
     public virtual Customer? Customer { get; set; }
 
+    public virtual ICollection<Towerplace> Towerplaces { get; set; } = new List<Towerplace>();
+
     public virtual Wave? Wave { get; set; }
 }

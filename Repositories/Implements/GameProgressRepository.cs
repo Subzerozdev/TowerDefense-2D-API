@@ -15,7 +15,10 @@ namespace Repositories.Implements
         }
 
         public async Task<Gameprogress?> GetByCustomerIdAsync(int customerId) =>
-            await _context.Gameprogresses.FirstOrDefaultAsync(g => g.CustomerId == customerId);
+            await _context.Gameprogresses
+            .Include(g => g.Towerplaces)
+            .Include(g => g.Wave)
+            .FirstOrDefaultAsync(g => g.CustomerId == customerId);
 
         public async Task UpdateAsync(Gameprogress progress)
         {

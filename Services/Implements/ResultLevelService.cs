@@ -21,25 +21,70 @@ namespace Services.Implements
 
         public async Task<ResultLevelDto> CreateResultLevelAsync(CreateResultLevelDto dto)
         {
+            // 1. Logic cập nhật Customer Point (giữ nguyên)
             var customer = await _customerRepo.GetByIdAsync(dto.CustomerId);
             if (customer == null) throw new Exception("Customer not found");
+
+            // Cộng thêm point cho customer
+            customer.Point = (customer.Point ?? 0) + dto.Point;
+            if (customer.Gameprogress != null)
+                customer.Gameprogress.Wave = null;
+            await _customerRepo.UpdateAsync(customer);
+
+            if (dto.GameLevelId == 0)
+            {
+                return new ResultLevelDto();
+            }
 
             var gameLevel = await _gameLevelService.GetByIdAsync(dto.GameLevelId);
             if (gameLevel == null) throw new Exception("Game Level not found");
 
-            // Tạo ResultLevel mới
-            var result = new Resultlevel
+            // 🚨 2. KIỂM TRA RESULT LEVEL ĐÃ TỒN TẠI CHƯA
+            var existingResult = await _resultRepo.GetByCustomerAndLevelAsync(dto.CustomerId, dto.GameLevelId);
+
+            Resultlevel result;
+            bool isUpdate = false;
+
+            if (existingResult != null)
             {
-                Star = dto.Star,
-                Customer = customer,
-                GameLevel = gameLevel
-            };
+                // 3. LOGIC CẬP NHẬT (UPDATE)
+                result = existingResult;
 
-            await _resultRepo.AddAsync(result);
+                // Chỉ cập nhật Star nếu Star mới cao hơn Star cũ
+                if (dto.Star > result.Star)
+                {
+                    result.Star = dto.Star;
+                    isUpdate = true;
+                }
 
-            // Cộng thêm point cho customer
-            customer.Point = (customer.Point ?? 0) + dto.Point;
-            await _customerRepo.UpdateAsync(customer);
+                // Không cần làm gì nếu Star mới thấp hơn hoặc bằng Star cũ
+            }
+            else
+            {
+                // 4. LOGIC TẠO MỚI (CREATE)
+                result = new Resultlevel
+                {
+                    Star = dto.Star,
+                    // 💡 Lưu ý: Tránh tải cả object Customer và GameLevel, 
+                    // nên gán trực tiếp ID để tối ưu performance
+                    CustomerId = dto.CustomerId,
+                    GameLevelId = dto.GameLevelId
+                };
+                await _resultRepo.AddAsync(result);
+                isUpdate = true; // Đánh dấu là đã thay đổi (thêm mới)
+            }
+
+            // 5. LƯU THAY ĐỔI (CHỈ KHI CÓ UPDATE HOẶC CREATE)
+            if (isUpdate)
+            {
+                // Nếu là update, chỉ cần gọi Update (hoặc Add/Update kết hợp) và SaveChanges
+                if (existingResult != null)
+                {
+                    await _resultRepo.UpdateAsync(result);
+                    // Tùy thuộc vào cách triển khai Repository, có thể cần gọi _resultRepo.UpdateAsync(result)
+                }
+                // Nếu là Add, đã gọi ở trên
+            }
 
             return new ResultLevelDto
             {

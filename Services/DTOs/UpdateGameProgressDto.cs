@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Repositories.Entities;
 
 namespace Services.DTOs
 {
@@ -13,5 +14,6 @@ namespace Services.DTOs
         public int CurrentHeart { get; set; }
         public int CurrentPoint { get; set; }
         public int? WaveId { get; set; }
+        public List<TowerPlacceDto> Towerplaces { get; set; } = [];
     }
 }

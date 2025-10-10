@@ -1,4 +1,6 @@
 ﻿
+using Repositories.Entities;
+
 namespace Services.DTOs
 {
     public class GameProgressDto
@@ -8,5 +10,6 @@ namespace Services.DTOs
         public int? CurrentHeart { get; set; }
         public int? CurrentPoint { get; set; }
         public int? WaveId { get; set; }
+        public List<Towerplace>? Towerplaces { get; set; }
     }
 }
