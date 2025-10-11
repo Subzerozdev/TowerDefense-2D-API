@@ -40,7 +40,7 @@ namespace TowerDefense_2D_API
         public async Task<IActionResult> GetListPoint()
         {
             var points = await _customerService.GetListPointAsync();
-            return Ok(points);
+            return Ok(points.ToList());
         }
     }
 }

@@ -52,12 +52,13 @@ namespace Services.Implements
             return MapToDto(customer);
         }
 
-        public async Task<IEnumerable<(string Username, double Point)>> GetListPointAsync()
+        public async Task<List<CustomerDto>> GetListPointAsync()
         {
             var list = await _customerRepo.GetAllAsync();
             return list
                 .OrderByDescending(c => c.Point ?? 0)
-                .Select(c => (c.Username, c.Point ?? 0));
+                .Select(c => MapToDto(c))
+                .ToList();
         }
 
         private CustomerDto MapToDto(Customer c)

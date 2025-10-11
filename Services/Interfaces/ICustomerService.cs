@@ -6,6 +6,6 @@ namespace Services.Interfaces
     {
         Task<CustomerDto?> RegisterAsync(string username, string password);
         Task<CustomerDto?> LoginAsync(string username, string password);
-        Task<IEnumerable<(string Username, double Point)>> GetListPointAsync();
+        Task<List<CustomerDto>> GetListPointAsync();
     }
 }
